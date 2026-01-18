@@ -1,0 +1,16 @@
+// Prisma schema for Ordem Paranormal API
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Models will be added in subsequent issues
+// Issue #2: User model
+// Issue #6: CharacterSheet model
+// Issue #12: Campaign, CampaignPlayer, CampaignCharacter models
