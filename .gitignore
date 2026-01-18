@@ -1,5 +1,28 @@
-node_modules
-# Keep environment variables out of version control
+# compiled output
+/dist
+/node_modules
+
+# logs
+pnpm-debug.log*
+
+# env
 .env
+.env.test
+
+# IDE
+.idea
+
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# coverage
+/coverage
 
 /generated/prisma
+
+/data
+/docs

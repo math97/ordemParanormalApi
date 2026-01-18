@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './env';
+import { EnvService } from './env.service';
 
 @Module({
   imports: [
@@ -9,15 +10,13 @@ import { envSchema } from './env';
       validate: (config) => {
         const parsed = envSchema.safeParse(config);
         if (!parsed.success) {
-          console.error(
-            'Invalid environment variables:',
-            parsed.error.format(),
-          );
           throw new Error('Invalid environment variables');
         }
         return parsed.data;
       },
     }),
   ],
+  providers: [EnvService],
+  exports: [EnvService],
 })
 export class EnvModule {}
