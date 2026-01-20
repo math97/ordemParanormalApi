@@ -7,10 +7,24 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
-// Models will be added in subsequent issues
-// Issue #2: User model
+// ============================================
+// User Model (Issue #2)
+// ============================================
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  displayName  String   @map("display_name")
+  avatarUrl    String?  @map("avatar_url")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+// Placeholder for future models:
 // Issue #6: CharacterSheet model
 // Issue #12: Campaign, CampaignPlayer, CampaignCharacter models
