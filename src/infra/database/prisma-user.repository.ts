@@ -12,7 +12,9 @@ export class PrismaUserRepository implements UserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } });
+    return this.prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+    });
   }
 
   async findByUsername(username: string): Promise<User | null> {
@@ -22,7 +24,12 @@ export class PrismaUserRepository implements UserRepository {
   async create(
     user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<User> {
-    return this.prisma.user.create({ data: user });
+    return this.prisma.user.create({
+      data: {
+        ...user,
+        email: user.email.toLowerCase(),
+      },
+    });
   }
 
   async update(id: string, data: Partial<User>): Promise<User> {
