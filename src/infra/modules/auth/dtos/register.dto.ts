@@ -1,29 +1,20 @@
-import {
-  IsEmail,
-  IsString,
-  MinLength,
-  MaxLength,
-  Matches,
-} from 'class-validator';
+import { z } from 'zod';
 
-export class RegisterDto {
-  @IsEmail()
-  email!: string;
+export const registerSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  username: z
+    .string()
+    .min(3, 'Username must be at least 3 characters')
+    .max(30, 'Username must be at most 30 characters')
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      'Username can only contain letters, numbers and underscores',
+    ),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  displayName: z
+    .string()
+    .min(1, 'Display name is required')
+    .max(100, 'Display name must be at most 100 characters'),
+});
 
-  @IsString()
-  @MinLength(3)
-  @MaxLength(30)
-  @Matches(/^[a-zA-Z0-9_]+$/, {
-    message: 'Username can only contain letters, numbers and underscores',
-  })
-  username!: string;
-
-  @IsString()
-  @MinLength(8)
-  password!: string;
-
-  @IsString()
-  @MinLength(1)
-  @MaxLength(100)
-  displayName!: string;
-}
+export type RegisterDto = z.infer<typeof registerSchema>;
