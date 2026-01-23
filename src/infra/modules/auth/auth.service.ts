@@ -76,6 +76,10 @@ export class AuthService {
         secret: this.envService.get('JWT_SECRET'),
       });
 
+      if (payload.type !== 'refresh') {
+        throw new UnauthorizedException('Invalid token type');
+      }
+
       const user = await this.userRepository.findById(payload.sub);
       if (!user) {
         throw new UnauthorizedException('Invalid token');
@@ -88,7 +92,7 @@ export class AuthService {
   }
 
   private generateTokens(user: User): TokenResponseDto {
-    const payload: JwtPayload = {
+    const basePayload = {
       sub: user.id,
       email: user.email,
       username: user.username,
@@ -97,11 +101,14 @@ export class AuthService {
     const expiresIn = this.envService.get('JWT_EXPIRES_IN');
     const refreshExpiresIn = this.envService.get('JWT_REFRESH_EXPIRES_IN');
 
-    const accessToken = this.jwtService.sign(payload, {
+    const accessTokenPayload: JwtPayload = { ...basePayload, type: 'access' };
+    const refreshTokenPayload: JwtPayload = { ...basePayload, type: 'refresh' };
+
+    const accessToken = this.jwtService.sign(accessTokenPayload, {
       expiresIn: expiresIn as JwtSignOptions['expiresIn'],
     });
 
-    const refreshToken = this.jwtService.sign(payload, {
+    const refreshToken = this.jwtService.sign(refreshTokenPayload, {
       expiresIn: refreshExpiresIn as JwtSignOptions['expiresIn'],
     });
 

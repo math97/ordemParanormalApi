@@ -223,10 +223,36 @@ describe('AuthService', () => {
         sub: 'non-existent-id',
         email: 'test@example.com',
         username: 'testuser',
+        type: 'refresh',
       });
 
       await expect(authService.refreshToken('valid-token')).rejects.toThrow(
         UnauthorizedException,
+      );
+    });
+
+    it('should throw UnauthorizedException when using access token for refresh', async () => {
+      const registerDto: RegisterDto = {
+        email: 'test@example.com',
+        username: 'testuser',
+        password: 'password123',
+        displayName: 'Test User',
+      };
+      const user = await authService.register(registerDto);
+      const users = userRepository.getAll();
+
+      mockJwtVerify.mockReturnValue({
+        sub: users[0].id,
+        email: user.email,
+        username: user.username,
+        type: 'access',
+      });
+
+      await expect(authService.refreshToken('access-token')).rejects.toThrow(
+        UnauthorizedException,
+      );
+      await expect(authService.refreshToken('access-token')).rejects.toThrow(
+        'Invalid or expired refresh token',
       );
     });
 
@@ -244,6 +270,7 @@ describe('AuthService', () => {
         sub: users[0].id,
         email: user.email,
         username: user.username,
+        type: 'refresh',
       });
 
       const result = await authService.refreshToken('valid-token');

@@ -1,5 +1,5 @@
-export class TokenResponseDto {
-  accessToken!: string;
-  refreshToken!: string;
-  expiresIn!: string;
+export interface TokenResponseDto {
+  readonly accessToken: string;
+  readonly refreshToken: string;
+  readonly expiresIn: string;
 }
